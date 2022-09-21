@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48</TargetFrameworks>
     <PackageId>LMDotNet.Core</PackageId>
     <Version>1.11.0</Version>
     <Authors>Frank Niemeyer, bigworld12</Authors>
@@ -16,6 +15,7 @@
     <PackageLicenseFile>license.md</PackageLicenseFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>Frank Niemeyer, bigworld12</Company>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="..\lmfit64\bin\Release\lmfit.dll">

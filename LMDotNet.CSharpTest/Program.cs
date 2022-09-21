@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LMDotNet;
 
 namespace LMDotNet.CSharpTest
 {
@@ -15,7 +11,8 @@ namespace LMDotNet.CSharpTest
         /// Demonstrates how to solve systems of non-linear
         /// equations using the LMA
         /// </summary>        
-        static void SolveExamples(LMBackend solverType) {
+        static void SolveExamples(LMBackend solverType)
+        {
             var solver = new LMSolver(optimizerBackend: solverType);
 
             // 1st example:
@@ -26,7 +23,8 @@ namespace LMDotNet.CSharpTest
             // Transform to a minimization problem:
             //      r[0] = 0 = y + 0.5x² - 3.0
             //      r[1] = 0 = y - exp(-x)            
-            Action<double[], double[]> f = (p, r) => {
+            Action<double[], double[]> f = (p, r) =>
+            {
                 // Here: p[0] = x; p[1] = y
                 var x = p[0];
                 var y = p[1];
@@ -38,7 +36,7 @@ namespace LMDotNet.CSharpTest
             // first solution
             var result1 = solver.Solve(f, new[] { -2.0, 0.0 });
             // second solution
-            var result2 = solver.Solve(f, new[] {  2.0, 0.0 });
+            var result2 = solver.Solve(f, new[] { 2.0, 0.0 });
 
             Console.WriteLine("Find (x, y) for which");
             Console.WriteLine("      y = -0.5x² + 3.0 &&");
@@ -52,16 +50,18 @@ namespace LMDotNet.CSharpTest
             // Solve
             //      y = -x² + 6 &&
             //      y = -2x - 2            
-            result1 = solver.Solve((p, r) => {
+            result1 = solver.Solve((p, r) =>
+            {
                 r[0] = p[1] + p[0] * p[0] - 6.0;   // 0 = y + x² - 6
                 r[1] = p[1] + 2.0 * p[0] + 2.0;    // 0 = y + 2x + 2
             }, new[] { 0.0, 0.0 });
 
-            result2 = solver.Solve((p, r) => {
+            result2 = solver.Solve((p, r) =>
+            {
                 r[0] = p[1] + p[0] * p[0] - 6.0;
                 r[1] = p[1] + 2.0 * p[0] + 2.0;
             }, new[] { 10.0, 0.0 });
-                        
+
             Console.WriteLine("Solve");
             Console.WriteLine("      y = -x² + 6 &&");
             Console.WriteLine("      y = -2x - 2");
@@ -73,12 +73,13 @@ namespace LMDotNet.CSharpTest
         /// Demonstrantes the usage of the generic minimization API
         /// LMSolver.Minimize
         /// </summary>
-        static void GenericMinimizationExamples(LMBackend solverType) {
+        static void GenericMinimizationExamples(LMBackend solverType)
+        {
             var solver = new LMSolver(optimizerBackend: solverType);
 
             // grid points
-            var xs = new[] { -1.0, -1.0,  1.0, 1.0 };
-            var zs = new[] { -1.0,  1.0, -1.0, 1.0 };
+            var xs = new[] { -1.0, -1.0, 1.0, 1.0 };
+            var zs = new[] { -1.0, 1.0, -1.0, 1.0 };
             // data points/samples
             var ys = new[] { 0.0, 1.0, 1.0, 2.0 };
 
@@ -90,12 +91,13 @@ namespace LMDotNet.CSharpTest
             //    Parameter vector ε = [β0 β1 β2]^T
             //    Residue: ε = y - y' = y - X β
             //    Find β' = argmin_β sum(ε²)
-            var fit = solver.Minimize((p, r) => {
+            var fit = solver.Minimize((p, r) =>
+            {
                 // compute the residue vector ε = y - y' based on the
                 // current parameters p (== β0, β1, β2)
                 var β0 = p[0];
                 var β1 = p[1];
-                var β2 = p[2];                
+                var β2 = p[2];
                 for (int i = 0; i < ys.Length; ++i)
                     r[i] = ys[i] - (β0 + β1 * xs[i] + β2 * zs[i]);
             }, new[] { 0.0, 0.0, 0.0 }, // initial guess for β'
@@ -116,7 +118,8 @@ namespace LMDotNet.CSharpTest
         /// <summary>
         /// Curve fitting using the Fit... convenience functions
         /// </summary>
-        static void CurveFittingExamples(LMBackend solverType) {
+        static void CurveFittingExamples(LMBackend solverType)
+        {
             var solver = new LMSolver(optimizerBackend: solverType);
 
             // 1st example: fit a model that is non-linear in its parameters
@@ -127,7 +130,7 @@ namespace LMDotNet.CSharpTest
             // for generating some noise
             var rand = new Random(12345);
             // sample points (here: equidistant)
-            var ts   = Enumerable.Range(0, 100).Select(i => i * 0.01).ToArray();
+            var ts = Enumerable.Range(0, 100).Select(i => i * 0.01).ToArray();
             // signal: "measured" values at sample points
             var sins = Enumerable.Range(0, 100)
                 .Select(i => 2.0 * Math.Sin(3.0 * ts[i] + 0.25) + rand.NextDouble() * 0.02)
@@ -146,14 +149,15 @@ namespace LMDotNet.CSharpTest
             var xs = new[] { -1.0, -1.0, 1.0, 1.0 };
             var zs = new[] { -1.0, 1.0, -1.0, 1.0 };
             // data points/samples
-            var ys = new[] { 0.0, 1.0, 1.0, 2.0 };            
+            var ys = new[] { 0.0, 1.0, 1.0, 2.0 };
             var fitPlane = solver.FitSurface((x, z, p) => p[0] + p[1] * x + p[2] * z, new[] { 0.0, 0.0, 0.0 }, xs, zs, ys);
             Console.WriteLine();
             Console.WriteLine("Aim: fit a plane to four data points");
             Console.WriteLine("Fit: y = {0} + {1} x + {2} z", fitPlane.OptimizedParameters[0], fitPlane.OptimizedParameters[1], fitPlane.OptimizedParameters[2]);
         }
-        
-        static void Main(string[] args) {
+
+        static void Main(string[] args)
+        {
             Console.WriteLine("Solve system of non-linear equations");
             Console.WriteLine("-------------------------------------------------------------------------------------");
             Console.WriteLine("Native LMMIN");
@@ -180,6 +184,7 @@ namespace LMDotNet.CSharpTest
             Console.WriteLine("-------------------------------------------------------------------------------------");
             Console.WriteLine("Managed LMMIN");
             Program.GenericMinimizationExamples(LMBackend.ManagedLmmin);
+            Console.ReadLine();
         }
     }
 }
