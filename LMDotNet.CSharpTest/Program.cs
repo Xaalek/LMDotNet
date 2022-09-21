@@ -184,6 +184,8 @@ namespace LMDotNet.CSharpTest
             Console.WriteLine("-------------------------------------------------------------------------------------");
             Console.WriteLine("Managed LMMIN");
             Program.GenericMinimizationExamples(LMBackend.ManagedLmmin);
+            Console.WriteLine("\n");
+            Console.WriteLine("Press any key to end the program...");
             Console.ReadLine();
         }
     }
